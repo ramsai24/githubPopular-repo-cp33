@@ -60,18 +60,18 @@ class GithubPopularRepos extends Component {
       name: each.name,
       starsCount: each.stars_count,
     }))
-    if (response.ok) {
+    if (!response.ok) {
       this.setState({
         githubRepoData: updatedList,
         apiStatus: apiStatusConstant.success,
       })
-    } else if (!response.ok) {
+    } else {
       this.setState({apiStatus: apiStatusConstant.failure})
     }
   }
 
-  renderInitialView = () => (
-    <div className="app-container">
+  languageView = () => (
+    <div>
       <h1>Popular</h1>
       <ul className="language-item-container">
         {languageFiltersData.map(languageItem => (
@@ -82,7 +82,12 @@ class GithubPopularRepos extends Component {
           />
         ))}
       </ul>
+    </div>
+  )
 
+  renderInitialView = () => (
+    <div className="app-container">
+      {this.languageView()}
       <div data-testid="loader">
         <Loader type="ThreeDots" color="#0284c7" height={80} width={80} />
       </div>
@@ -93,16 +98,7 @@ class GithubPopularRepos extends Component {
     const {githubRepoData} = this.state
     return (
       <div className="app-container">
-        <h1>Popular</h1>
-        <ul className="language-item-container">
-          {languageFiltersData.map(languageItem => (
-            <LanguageFilterItem
-              languagefilterItem={languageItem}
-              languageIdUpdate={this.languageIdUpdate}
-              key={languageItem.id}
-            />
-          ))}
-        </ul>
+        {this.languageView()}
 
         <ul>
           {githubRepoData.map(each => (
@@ -115,6 +111,7 @@ class GithubPopularRepos extends Component {
 
   renderFailureView = () => (
     <div>
+      {this.languageView()}
       <img
         className="failure-img"
         src="https://assets.ccbp.in/frontend/react-js/api-failure-view.png"
